@@ -1,0 +1,95 @@
+######################################
+# Target
+######################################
+TARGET = validator
+
+#######################################
+# Type build
+######################################
+# DEBUG = 1
+# OPTIMIZE = -Og
+
+#######################################
+# Path
+######################################
+BUILD_DIR = build
+
+#################################
+# Toolchain
+#################################
+PREFIX = /opt/P18-L2/opt/EmbedSky/gcc-linaro-5.3.1-2016.05-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+
+CC  = $(PREFIX)gcc
+CXX = $(PREFIX)g++
+AS  = $(PREFIX)gcc -x assembler-with-cpp
+CP  = $(PREFIX)objcopy
+SZ  = $(PREFIX)size
+
+######################################
+# Source files
+######################################
+C_SOURCES =  \
+
+CXX_SOURCES = \
+main.cpp
+
+#######################################
+# Macros for GCC
+#######################################
+C_DEFS =  \
+
+C_INCLUDES =  \
+sdk/inc/ 
+
+#######################################
+# Flags
+#######################################
+ASFLAGS =
+CFLAGS = 
+CXXFLAGS = 
+
+LIBS = 
+
+#################################
+# Object List
+#################################
+OBJECTS += $(addsuffix .o,$(addprefix $(BUILD_DIR)/$(TARGET),$(basename $(C_SOURCES))))
+OBJECTS += $(addsuffix .o,$(addprefix $(BUILD_DIR)/$(TARGET),$(basename $(CXX_SOURCES))))
+
+#################################
+# Target Output Files
+#################################
+TARGET_BIN = $(BUILD_DIR)/$(TARGET).bin
+
+#################################
+# Build
+#################################
+$(BUILD_DIR)/$(TARGET)%.o: %.cpp
+	@mkdir -p $(dir $@)
+	@echo $<
+	@$(CXX) -c -o $@ $(CXXFLAGS) $<
+
+$(TARGET) :  $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
+$(BUILD_DIR)/$(TARGET)%.o: %.c
+	@mkdir -p $(dir $@)
+	@echo $<
+	@$(CC) -c -o $@ $(CFLAGS) $<
+
+$(TARGET_BIN): $(TARGET_ELF)
+	$(BIN) $< $@
+
+#################################
+# Recipes
+#################################
+.PHONY: echomessages all clean 
+	
+echomessages:
+	@echo ###############################################################################
+	@echo $(addsuffix .o,$(addprefix $(BUILD_DIR)/$(TARGET),$(basename $(CXX_SOURCES))))
+
+all: $(TARGET_BIN)
+
+clean:
+	-rm -fR $(BUILD_DIR)
