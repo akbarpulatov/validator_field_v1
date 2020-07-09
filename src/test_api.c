@@ -2841,7 +2841,7 @@ unsigned char auto_232(void)
 	unsigned char wbuffer[1024]={0};
 	char dispbuff[25]={0};
 	
-	com2fd = OSUART_Init("/dev/ttymxc1","115200,n,8,1");
+	com2fd = OSUART_Init("/dev/ttymxc1","9600,n,8,1");
 	if(com2fd == 0)
 	{
 		printf("open com2 err!\n");
